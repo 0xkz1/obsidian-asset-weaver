@@ -259,10 +259,10 @@ CRITICAL: Do not use unescaped double quotes inside the JSON strings. Use single
 
 			const linkedNotesYaml = linkedNotes.length > 0 
 				? "\n" + linkedNotes.map(n => `  - "[[${n}]]"`).join("\n")
-				: "[]";
+				: " []";
 
-			// Format metadata for the markdown file
-			const tagsString = tags.length > 0 ? `['${tags.join("', '")}']` : "[]";
+			// Format metadata for the markdown file with proper YAML spacing
+			const tagsString = tags.length > 0 ? `['${tags.join("', '")}']` : " []";
 			const mdName = `${imgFile.basename} - ${title}.md`;
 
 			const mdContent = `---
