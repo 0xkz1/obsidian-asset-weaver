@@ -1,90 +1,70 @@
-# Obsidian Sample Plugin
+# AssetWeaver
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+An Obsidian plugin that autonomously scans your vault for untagged image assets and leverages a local Vision-Language Model (VLM) to generate structured markdown sidecar files. Perfect for creative professionals, artists, and researchers looking to weave their visual libraries into their knowledge graphs without relying on cloud APIs.
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## Features
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open modal (simple)" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+- **Automated Metadata Generation**: Analyzes images to generate a descriptive title, category, keywords, and a short description.
+- **Sidecar Markdown Creation**: Creates a markdown note alongside your image containing the generated YAML frontmatter, making your images searchable and easily queryable in Obsidian.
+- **Backlink Extraction**: Automatically detects and lists other notes in your vault that embed or link to the image.
+- **Privacy First (Local AI)**: Designed to work seamlessly with local LLM/VLM servers like [LM Studio](https://lmstudio.ai/) or [Ollama](https://ollama.com/), ensuring your assets never leave your machine.
+- **Batch Processing**: Scans your designated asset folder and processes all untagged images sequentially to manage server load.
 
-## First time developing plugins?
+## Prerequisites
 
-Quick starting guide for new plugin devs:
+This plugin requires an OpenAI-compatible API endpoint that supports Vision capabilities. We highly recommend using a local VLM for privacy and cost-efficiency.
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+### Recommended Local Setup (LM Studio)
+1. Download and install [LM Studio](https://lmstudio.ai/).
+2. Search and download a Vision-Language Model (e.g., `qwen2-vl-7b-instruct` or `llava`).
+3. Load the model and go to the **Local Server** tab (`<->`).
+4. Click **Start Server**. Note the port number (default is usually `1234`).
 
-## Releasing new releases
+## Installation
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+### Manual Installation (Current)
+1. Download the latest release (`main.js`, `manifest.json`, `styles.css`) from the Releases page.
+2. Create a folder named `asset-weaver` in your vault's `.obsidian/plugins/` directory.
+3. Place the downloaded files into that folder.
+4. Reload Obsidian and enable the plugin in **Settings -> Community plugins**.
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+## Configuration
 
-## Adding your plugin to the community plugin list
+Go to Obsidian **Settings -> AssetWeaver Settings** to configure the plugin:
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+- **API Base URL**: The endpoint of your local server. For LM Studio, use `http://localhost:1234/v1`. For Ollama, use `http://localhost:11434/v1`.
+- **Model Name**: The exact name of the model you have loaded (e.g., `qwen2-vl:7b`).
+- **API Key**: A dummy key (e.g., `lm-studio`) for local servers, or your actual API key if using a remote service.
+- **Target Folder**: The path to the folder in your vault where your images are stored (e.g., `11_assets_OB`).
 
-## How to use
+## How to Use
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+1. Ensure your local VLM server is running.
+2. Place your image files (`.jpg`, `.png`, `.webp`, etc.) into your designated Target Folder.
+3. Click the **"Run AssetWeaver"** ribbon icon on the left sidebar, or open the Command Palette (`Ctrl/Cmd + P`) and run **"Scan and weave new assets"**.
+4. The plugin will scan the folder for images that do not have a corresponding markdown sidecar file.
+5. It will process the new images sequentially, generating detailed markdown files with YAML metadata right next to your images.
 
-## Manually installing the plugin
+## Troubleshooting & Technical Details
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+During the development of this plugin, several edge cases were identified and resolved to ensure enterprise-grade stability:
 
-## Improve code quality with eslint
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- This project already has eslint preconfigured, you can invoke a check by running`npm run lint`
-- Together with a custom eslint [plugin](https://github.com/obsidianmd/eslint-plugin) for Obsidan specific code guidelines.
-- A GitHub action is preconfigured to automatically lint every commit on all branches.
+### 1. VLM Memory Overload & Connection Timeouts
+**Issue**: Sending raw, high-resolution images (e.g., 4K photos or large screenshots) converted to Base64 resulted in massive payload sizes (7MB+). This frequently caused the local VLM server (LM Studio) to crash due to out-of-memory (OOM) errors or connection timeouts.
+**Solution**: Implemented an internal HTML5 `<canvas>` API resizer. Before sending any request, the plugin automatically scales images down to a maximum of `768px` and compresses them to JPEG. This reduces the payload size to mere kilobytes, ensuring rapid, stable inference without freezing the user's machine.
 
-## Funding URL
+### 2. Malformed JSON from VLMs (Unescaped Quotes)
+**Issue**: When analyzing screenshots containing text, VLMs often attempt to quote the extracted text directly in the JSON response (e.g., `"description": "A screenshot of a "text" prompt."`). This results in unescaped double quotes, causing `JSON.parse` to fail and the batch process to halt.
+**Solution**: Applied strict prompt engineering explicitly forbidding unescaped double quotes, combined with a custom Regular Expression (`jsonString.replace(...)`) cleanup step that catches and sanitizes common escaping mistakes before parsing the JSON object.
 
-You can include funding URLs where people who use your plugin can financially support it.
+### 3. Invisible Corrupted Files (0-Byte Files)
+**Issue**: Synchronization engines (like Syncthing) or clipboard failures sometimes leave invisible 0-byte `.png` placeholder files in the vault. Attempting to draw an empty blob to the HTML5 Canvas causes the `img.onerror` event to fire with a non-standard `Event` object, leading to confusing `undefined` error logs.
+**Solution**: Added a strict pre-flight check (`binary.byteLength === 0`). The plugin gracefully catches 0-byte files, skips them safely, and notifies the user directly in the Obsidian UI exactly which file is corrupted.
 
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
+### 4. Obsidian API Backlink Limitations for Images
+**Issue**: Using Obsidian's standard `app.metadataCache.resolvedLinks` API failed to detect links pointing to images, as `resolvedLinks` only tracks Markdown-to-Markdown links.
+**Solution**: Engineered a custom vault-wide scanner that iterates through all markdown files (`app.vault.getMarkdownFiles()`) and reads their individual metadata caches (`cache.links` and `cache.embeds`). This ensures that every single `[[image.jpg]]` or `![[image.jpg]]` reference is accurately mapped and included in the sidecar's YAML `linked_notes` array.
 
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
-```
+## License
 
-If you have multiple URLs, you can also do:
-
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
-```
-
-## API Documentation
-
-See https://docs.obsidian.md
+MIT License

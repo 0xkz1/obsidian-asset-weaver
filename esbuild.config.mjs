@@ -1,6 +1,8 @@
 import esbuild from "esbuild";
 import process from "process";
 import { builtinModules } from 'node:module';
+import fs from "node:fs";
+import path from "node:path";
 
 const banner =
 `/*
@@ -10,6 +12,27 @@ if you want to view the source, please visit the github repository of this plugi
 `;
 
 const prod = (process.argv[2] === "production");
+
+// === 自動コピー先の設定 ===
+const vaultPath = "/home/kz003/atelier/obsidian-vault/";
+const pluginDir = path.join(vaultPath, ".obsidian/plugins/asset-weaver");
+
+const copyToVault = {
+	name: 'copy-to-vault',
+	setup(build) {
+		build.onEnd(() => {
+			if (!fs.existsSync(pluginDir)) {
+				fs.mkdirSync(pluginDir, { recursive: true });
+			}
+			// 必要なファイルをコピー
+			fs.copyFileSync("main.js", path.join(pluginDir, "main.js"));
+			if (fs.existsSync("manifest.json")) fs.copyFileSync("manifest.json", path.join(pluginDir, "manifest.json"));
+			if (fs.existsSync("styles.css")) fs.copyFileSync("styles.css", path.join(pluginDir, "styles.css"));
+			
+			console.log(`Build complete. Files copied to ${pluginDir}`);
+		});
+	},
+};
 
 const context = await esbuild.context({
 	banner: {
@@ -39,6 +62,7 @@ const context = await esbuild.context({
 	treeShaking: true,
 	outfile: "main.js",
 	minify: prod,
+	plugins: [copyToVault], // コピー用のプラグインを追加
 });
 
 if (prod) {
