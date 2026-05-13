@@ -13,18 +13,29 @@ if you want to view the source, please visit the github repository of this plugi
 
 const prod = (process.argv[2] === "production");
 
-// === 自動コピー先の設定 ===
-const vaultPath = "/home/kz003/atelier/obsidian-vault/";
-const pluginDir = path.join(vaultPath, ".obsidian/plugins/obsidian-asset-weaver");
+// Load local settings if they exist
+let vaultPath = "";
+if (fs.existsSync("local-settings.json")) {
+	try {
+		const settings = JSON.parse(fs.readFileSync("local-settings.json", "utf8"));
+		vaultPath = settings.vaultPath;
+	} catch (e) {
+		console.error("Error reading local-settings.json:", e);
+	}
+}
+
+const pluginDir = vaultPath ? path.join(vaultPath, ".obsidian/plugins/obsidian-asset-weaver") : "";
 
 const copyToVault = {
 	name: 'copy-to-vault',
 	setup(build) {
 		build.onEnd(() => {
+			if (!pluginDir) return;
+
 			if (!fs.existsSync(pluginDir)) {
 				fs.mkdirSync(pluginDir, { recursive: true });
 			}
-			// 必要なファイルをコピー
+			// Copy necessary files
 			fs.copyFileSync("main.js", path.join(pluginDir, "main.js"));
 			if (fs.existsSync("manifest.json")) fs.copyFileSync("manifest.json", path.join(pluginDir, "manifest.json"));
 			if (fs.existsSync("styles.css")) fs.copyFileSync("styles.css", path.join(pluginDir, "styles.css"));
@@ -62,7 +73,7 @@ const context = await esbuild.context({
 	treeShaking: true,
 	outfile: "main.js",
 	minify: prod,
-	plugins: fs.existsSync(vaultPath) ? [copyToVault] : [], // Vaultが存在する場合のみコピーを実行
+	plugins: pluginDir ? [copyToVault] : [], 
 });
 
 if (prod) {
