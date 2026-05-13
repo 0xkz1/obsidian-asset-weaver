@@ -15,7 +15,7 @@ const prod = (process.argv[2] === "production");
 
 // === 自動コピー先の設定 ===
 const vaultPath = "/home/kz003/atelier/obsidian-vault/";
-const pluginDir = path.join(vaultPath, ".obsidian/plugins/asset-weaver");
+const pluginDir = path.join(vaultPath, ".obsidian/plugins/obsidian-asset-weaver");
 
 const copyToVault = {
 	name: 'copy-to-vault',
