@@ -24,7 +24,7 @@ if (fs.existsSync("local-settings.json")) {
 	}
 }
 
-const pluginDir = vaultPath ? path.join(vaultPath, ".obsidian/plugins/obsidian-asset-weaver") : "";
+const pluginDir = vaultPath ? path.join(vaultPath, ".obsidian/plugins/asset-weaver") : "";
 
 const copyToVault = {
 	name: 'copy-to-vault',
