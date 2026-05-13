@@ -62,7 +62,7 @@ const context = await esbuild.context({
 	treeShaking: true,
 	outfile: "main.js",
 	minify: prod,
-	plugins: [copyToVault], // コピー用のプラグインを追加
+	plugins: fs.existsSync(vaultPath) ? [copyToVault] : [], // Vaultが存在する場合のみコピーを実行
 });
 
 if (prod) {
