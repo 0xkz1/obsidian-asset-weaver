@@ -26,14 +26,12 @@ export class AssetWeaverSettingTab extends PluginSettingTab {
 	display(): void {
 		const {containerEl} = this;
 		containerEl.empty();
-		
-		containerEl.createEl('h2', {text: 'AssetWeaver Settings'});
 
 		new Setting(containerEl)
-			.setName('API Base URL')
-			.setDesc('The base URL for your local or remote OpenAI-compatible VLM API. Example: http://localhost:11434/v1 for Ollama.')
+			.setName('API base URL')
+			.setDesc('Base URL of your local VLM server (e.g., http://localhost:11434/v1).')
 			.addText(text => text
-				.setPlaceholder('http://localhost:11434/v1')
+				.setPlaceholder('Enter the API base URL')
 				.setValue(this.plugin.settings.apiBaseUrl)
 				.onChange(async (value) => {
 					this.plugin.settings.apiBaseUrl = value;
@@ -41,10 +39,10 @@ export class AssetWeaverSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('Model Name')
-			.setDesc('The name of the Vision-Language Model to use. Example: qwen2-vl:7b, llava, or gemini-1.5-flash.')
+			.setName('Model name')
+			.setDesc('Name of the vision-language model loaded on your local server.')
 			.addText(text => text
-				.setPlaceholder('qwen2-vl:7b')
+				.setPlaceholder('Enter the model name')
 				.setValue(this.plugin.settings.modelName)
 				.onChange(async (value) => {
 					this.plugin.settings.modelName = value;
@@ -52,10 +50,10 @@ export class AssetWeaverSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('API Key')
-			.setDesc('Your API key. If using local Ollama, you can leave this as a dummy key.')
+			.setName('API key')
+			.setDesc('API key for authentication (use any dummy value for local servers).')
 			.addText(text => text
-				.setPlaceholder('Enter your API key')
+				.setPlaceholder('Enter the API key')
 				.setValue(this.plugin.settings.apiKey)
 				.onChange(async (value) => {
 					this.plugin.settings.apiKey = value;
@@ -63,10 +61,10 @@ export class AssetWeaverSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('Target Folder')
-			.setDesc('The folder in your vault where your un-tagged images are stored.')
+			.setName('Target folder')
+			.setDesc('Vault folder path containing the images you want to tag.')
 			.addText(text => text
-				.setPlaceholder('11_assets_OB')
+				.setPlaceholder('Enter the folder path')
 				.setValue(this.plugin.settings.targetFolder)
 				.onChange(async (value) => {
 					this.plugin.settings.targetFolder = value;

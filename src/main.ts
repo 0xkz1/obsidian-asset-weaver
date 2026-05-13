@@ -1,16 +1,16 @@
-import {App, Notice, Plugin, TFile, TFolder, requestUrl, arrayBufferToBase64} from 'obsidian';
+import {Notice, Plugin, TFile, requestUrl} from 'obsidian';
 import {DEFAULT_SETTINGS, AssetWeaverSettings, AssetWeaverSettingTab} from "./settings";
 
 export default class AssetWeaverPlugin extends Plugin {
 	settings: AssetWeaverSettings;
 
 	async onload() {
-		console.log('Loading AssetWeaver plugin');
+		console.debug('Loading AssetWeaver plugin');
 		await this.loadSettings();
 
 		// Add a ribbon icon to the left sidebar
-		this.addRibbonIcon('image-plus', 'Run AssetWeaver', (evt: MouseEvent) => {
-			this.processImages();
+		this.addRibbonIcon('image-plus', 'Run asset weaver', (evt: MouseEvent) => {
+			void this.processImages();
 		});
 
 		// Add a command to the command palette
@@ -18,7 +18,7 @@ export default class AssetWeaverPlugin extends Plugin {
 			id: 'run-asset-weaver',
 			name: 'Scan and weave new assets',
 			callback: () => {
-				this.processImages();
+				void this.processImages();
 			}
 		});
 
@@ -27,7 +27,7 @@ export default class AssetWeaverPlugin extends Plugin {
 	}
 
 	onunload() {
-		console.log('Unloading AssetWeaver plugin');
+		console.debug('Unloading AssetWeaver plugin');
 	}
 
 	async loadSettings() {
@@ -44,7 +44,7 @@ export default class AssetWeaverPlugin extends Plugin {
 	}
 
 	// Helper function to format tags into an array
-	sanitizeTags(tags: any): string[] {
+	sanitizeTags(tags: unknown): string[] {
 		if (Array.isArray(tags)) {
 			return tags.map(tag => String(tag).trim().replace(/\s+/g, "-").toLowerCase()).filter(tag => tag);
 		}
@@ -85,7 +85,7 @@ export default class AssetWeaverPlugin extends Plugin {
 		}
 
 		if (unTaggedImages.length === 0) {
-			new Notice('🎉 All images are already tagged!');
+			new Notice('All images are already tagged!');
 			return;
 		}
 
@@ -109,7 +109,7 @@ export default class AssetWeaverPlugin extends Plugin {
 			}
 		}
 
-		new Notice('✅ Batch processing complete!');
+		new Notice('Batch processing complete!');
 	}
 
 	// Helper function to resize image and convert to Base64
@@ -152,9 +152,9 @@ export default class AssetWeaverPlugin extends Plugin {
 				resolve(base64 || '');
 			};
 			
-			img.onerror = (e) => {
+			img.onerror = () => {
 				URL.revokeObjectURL(url);
-				reject(e);
+				reject(new Error('Failed to load image for resizing.'));
 			};
 			
 			img.src = url;
@@ -214,21 +214,31 @@ CRITICAL: Do not use unescaped double quotes inside the JSON strings. Use single
 				body: JSON.stringify(payload)
 			});
 
-			const responseContent = response.json.choices[0].message.content;
+			interface VLMResponse {
+				choices: Array<{ message: { content: string } }>;
+			}
+			const responseJson = response.json as VLMResponse;
+			const responseContent = String(responseJson.choices?.[0]?.message?.content ?? "");
 			const jsonMatch = responseContent.match(/\{[\s\S]*\}/);
 			if (!jsonMatch) throw new Error("VLM did not return a JSON object.");
 			
-			let jsonString = jsonMatch[0];
+			let jsonString: string = jsonMatch[0];
 			// Basic cleanup for common unescaped quote issues in VLM outputs
 			jsonString = jsonString.replace(/:\s*"([^"]*)"([^",}\]]+)"([^"]*)"/g, ': "$1\'$2\'$3"');
 			
-			const analysis = JSON.parse(jsonString);
+			interface VLMAnalysis {
+				title?: string;
+				category?: string;
+				tags?: unknown;
+				description?: string;
+			}
+			const analysis = JSON.parse(jsonString) as VLMAnalysis;
 
 			// Extract metadata from the AI response
-			const title = this.sanitizeFilename(analysis.title || 'Untitled');
-			const tags = this.sanitizeTags(analysis.tags || []);
-			const category = analysis.category || 'Unclassified';
-			const description = analysis.description || '';
+			const title = this.sanitizeFilename(String(analysis.title ?? 'Untitled'));
+			const tags = this.sanitizeTags(analysis.tags ?? []);
+			const category = analysis.category ?? 'Unclassified';
+			const description = analysis.description ?? '';
 			const timestamp = window.moment().format("YYYY-MM-DD HH:mm");
 
 			// Retrieve backlinks (notes that reference this image)
@@ -281,17 +291,18 @@ ${description}
 			await this.app.vault.create(`${folderPath}/${mdName}`, mdContent);
 			new Notice(`Successfully created: ${mdName}`);
 
-		} catch (error: any) {
+		} catch (error: unknown) {
 			console.error(`Error processing ${imgFile.name}:`, error);
 			
 			let errorMsg = "Unknown error";
 			if (error instanceof Error) {
 				errorMsg = error.message;
-			} else if (error && error.status) {
+			} else if (typeof error === 'object' && error !== null && 'status' in error) {
 				// HTTP Error from requestUrl
-				errorMsg = `HTTP ${error.status} - ${error.text || 'Bad Request'}`;
+				const httpError = error as Record<string, unknown>;
+				errorMsg = `HTTP ${String(httpError.status)} - ${typeof httpError.text === 'string' ? httpError.text : 'Bad Request'}`;
 			} else if (typeof error === 'object') {
-				try { errorMsg = JSON.stringify(error); } catch (e) { errorMsg = "Object stringify failed"; }
+				try { errorMsg = JSON.stringify(error); } catch { errorMsg = "Object stringify failed"; }
 			} else if (typeof error === 'string') {
 				errorMsg = error;
 			}
