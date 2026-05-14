@@ -58,12 +58,20 @@ export default class AssetWeaverPlugin extends Plugin {
 	async processImages() {
 		const targetFolderPath = this.settings.targetFolder;
 		
+		// Normalize target folder path (remove leading/trailing slashes)
+		const normalizedTargetRoot = targetFolderPath.replace(/^\/+|\/+$/g, '');
+		
 		// Extract files directly under the target folder from the vault
 		const allFilesInVault = this.app.vault.getFiles();
-		const filesInTarget = allFilesInVault.filter(f => f.parent && f.parent.path === targetFolderPath);
+		const filesInTarget = allFilesInVault.filter(f => {
+			if (!f.parent) return false;
+			const parentPath = f.parent.path.replace(/^\/+|\/+$/g, '');
+			return parentPath === normalizedTargetRoot;
+		});
 
 		if (filesInTarget.length === 0) {
-			new Notice(`Error: No files found in target folder "${targetFolderPath}".`);
+			new Notice(`Error: No files found in target folder "${targetFolderPath}". Check your settings.`);
+			console.warn(`AssetWeaver: No files found in "${normalizedTargetRoot}"`);
 			return;
 		}
 
@@ -71,17 +79,24 @@ export default class AssetWeaverPlugin extends Plugin {
 		const images = filesInTarget.filter(f => imageExtensions.includes(f.extension.toLowerCase()));
 		const mds = filesInTarget.filter(f => f.extension.toLowerCase() === 'md');
 
+		console.debug(`AssetWeaver: Found ${images.length} images and ${mds.length} markdown files in "${normalizedTargetRoot}"`);
+
 		let unTaggedImages: TFile[] = [];
 
 		for (let img of images) {
 			const baseName = img.basename;
-			// Check if a sidecar markdown file already exists (exact match or starts with "basename - ")
-			const hasSidecar = mds.some(md => 
+			// Check if a sidecar markdown file already exists
+			const sidecar = mds.find(md => 
 				md.basename === baseName || 
 				md.basename.startsWith(`${baseName} - `) ||
 				md.basename.startsWith(`${baseName}-`)
 			);
-			if (!hasSidecar) unTaggedImages.push(img);
+			
+			if (sidecar) {
+				console.debug(`AssetWeaver: Skipping "${img.name}" because sidecar "${sidecar.name}" already exists.`);
+			} else {
+				unTaggedImages.push(img);
+			}
 		}
 
 		if (unTaggedImages.length === 0) {
