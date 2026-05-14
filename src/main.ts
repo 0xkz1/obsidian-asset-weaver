@@ -15,7 +15,7 @@ export default class AssetWeaverPlugin extends Plugin {
 
 		// Add a command to the command palette
 		this.addCommand({
-			id: 'run-asset-weaver',
+			id: 'scan-new-assets',
 			name: 'Scan and weave new assets',
 			callback: () => {
 				void this.processImages();
