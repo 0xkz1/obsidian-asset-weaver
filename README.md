@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./sample/asset-weaver-logo.png" alt="AssetWeaver Logo" width="200">
+</p>
+
 # AssetWeaver
 
 An Obsidian plugin that autonomously scans your vault for untagged image assets and leverages a local Vision-Language Model (VLM) to generate structured markdown sidecar files. Perfect for creative professionals, artists, and researchers looking to weave their visual libraries into their knowledge graphs without relying on cloud APIs.
