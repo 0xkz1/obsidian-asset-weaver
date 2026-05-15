@@ -5,6 +5,6 @@
 	"minAppVersion": "1.0.0",
 	"description": "Automatically generates markdown sidecars for images using a local Vision-Language Model.",
 	"author": "Kazuki Yunome",
-	"authorUrl": "https://kazukiyunome.com",
+	"authorUrl": "https://github.com/0xkz1",
 	"isDesktopOnly": true
 }

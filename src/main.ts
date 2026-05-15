@@ -80,6 +80,21 @@ export default class AssetWeaverPlugin extends Plugin {
 		const mds = filesInTarget.filter(f => f.extension.toLowerCase() === 'md');
 
 		console.debug(`AssetWeaver: Found ${images.length} images and ${mds.length} markdown files in "${normalizedTargetRoot}"`);
+		if (images.length > 0) {
+			new Notice(`Found ${images.length} images in target folder.`);
+		} else {
+			// Check if there are images in subfolders to help the user
+			const imagesInSubfolders = allFilesInVault.filter(f => {
+				const isImage = imageExtensions.includes(f.extension.toLowerCase());
+				const isInSubfolder = f.path.startsWith(normalizedTargetRoot + "/");
+				return isImage && isInSubfolder;
+			});
+			if (imagesInSubfolders.length > 0) {
+				new Notice(`⚠️ Found ${imagesInSubfolders.length} images in subfolders, but they are ignored. Move them to the root of "${normalizedTargetRoot}".`);
+			} else {
+				new Notice(`❌ No images found in "${normalizedTargetRoot}".`);
+			}
+		}
 
 		let unTaggedImages: TFile[] = [];
 
@@ -94,17 +109,21 @@ export default class AssetWeaverPlugin extends Plugin {
 			
 			if (sidecar) {
 				console.debug(`AssetWeaver: Skipping "${img.name}" because sidecar "${sidecar.name}" already exists.`);
+				// Optionally show a notice for the first few skips to not spam
+				if (unTaggedImages.length < 1 && images.length < 5) {
+					new Notice(`Skipping "${img.name}" (sidecar exists)`);
+				}
 			} else {
 				unTaggedImages.push(img);
 			}
 		}
 
-		if (unTaggedImages.length === 0) {
-			new Notice('All images are already tagged!');
+		if (unTaggedImages.length === 0 && images.length > 0) {
+			new Notice('All images in this folder already have markdown files.');
 			return;
 		}
 
-		new Notice(`🚀 Found ${unTaggedImages.length} un-tagged images. Starting batch processing...`);
+		new Notice(`Found ${unTaggedImages.length} untagged images. Starting batch processing.`);
 
 		// Process images sequentially to avoid overloading the local VLM server
 		let count = 0;
@@ -120,7 +139,7 @@ export default class AssetWeaverPlugin extends Plugin {
 
 			// Add a delay between requests to reduce server load
 			if (count < unTaggedImages.length) {
-				await new Promise(resolve => setTimeout(resolve, 1000));
+				await new Promise(resolve => window.setTimeout(resolve, 1000));
 			}
 		}
 
@@ -149,7 +168,7 @@ export default class AssetWeaverPlugin extends Plugin {
 					}
 				}
 
-				const canvas = document.createElement('canvas');
+				const canvas = activeDocument.createElement('canvas');
 				canvas.width = width;
 				canvas.height = height;
 				const ctx = canvas.getContext('2d');
