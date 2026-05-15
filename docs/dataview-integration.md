@@ -4,28 +4,7 @@ After AssetWeaver processes your images, you can use [Dataview](https://github.c
 
 ---
 
-## What AssetWeaver Creates
-
-Before diving into Dataview queries, it helps to understand what AssetWeaver produces. Each image gets a sidecar `.md` file with structured YAML frontmatter — including English titles, categories, tags, and a `cover` field referencing the original image.
-
-### At Scale: From Mess to Library
-
-Thousands of generic filenames (`Pasted image 1.png`, `Screenshot 2026-05-11 at 23.15.58.png`) become a categorized, searchable collection with meaningful titles and metadata.
-
-![Before Directory](../sample/before_directory.png)
-![After Directory](../sample/after_directory.png)
-
-### Per Asset: From Image to Structured Data
-
-See the main [README](../README.md#visual-comparison-before-vs-after) for a side-by-side comparison of how a raw image gets transformed into YAML frontmatter (title, tags, description, backlinks).
-
----
-
-## Dataview Gallery Query
-
-Here's how to query images tagged with `#animal` and display them as a gallery:
-
-### Query
+## Query: Gallery with Cover Images
 
 ```dataview
 TABLE without id
@@ -48,6 +27,37 @@ SORT file.ctime DESC
 
 ![Animal Gallery Example](../sample/gallery_animal.png)
 
-See [`sample/dataview_animal_gallery_example.md`](../sample/dataview_animal_gallery_example.md) for a complete working example.
+---
+
+## Alternative Query: Linked File Names
+
+```dataview
+TABLE without id
+"[[" & file.link & "|" & file.cover & "]]" as "Animal Images"
+FROM "" 
+WHERE contains(file.tags, "animal")
+SORT file.mtime DESC
+```
+
+This variation links the image name directly to the cover file.
+
+---
+
+## How Sidecar Data Enables These Queries
+
+When AssetWeaver processes an image, it creates a `.md` sidecar file like this:
+
+```yaml
+---
+title: A red fox in the forest
+category: Nature
+tags: [animal, wildlife, fox]
+cover: Pasted image 001.png
+linked_notes: []
+processed_at: 2026-05-01 11:00
+---
+```
+
+The `tags` and `cover` fields in the YAML frontmatter are what make Dataview queries possible. Dataview reads these fields and displays them in a table or gallery view.
 
 > **Tip**: AssetWeaver automatically adds tags like `#animal`, `#landscape`, `#portrait`, etc. to your image metadata. Use Dataview to build custom views!

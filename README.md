@@ -19,14 +19,20 @@
   <img src="https://img.shields.io/github/license/0xkz1/obsidian-asset-weaver?style=flat-square" alt="MIT license">
 </p>
 
-<hr>
+## What AssetWeaver Does
 
-<p align="center">
-  <strong>📖 <a href="docs/dataview-integration.md">Dataview Integration Guide</a></strong><br>
-  <span style="font-size: 0.9em;">Learn how to query your tagged images with Dataview — gallery queries, library-scale transformation examples, and more.</span>
-</p>
+AssetWeaver transforms your vault's raw image assets into a structured, searchable library by using a local Vision-Language Model to generate rich metadata.
 
-<hr>
+### At Scale: From Mess to Library
+
+Thousands of generic filenames (`Pasted image 1.png`, `Screenshot 2026-05-11 at 23.15.58.png`) become a categorized, searchable collection with meaningful English titles and metadata.
+
+![Before Directory](./sample/before_directory.png)
+![After Directory](./sample/after_directory.png)
+
+### Per Asset: From Image to Structured Data
+
+See the [Visual Comparison](#visual-comparison-before-vs-after) below for how a raw image gets transformed into YAML frontmatter — title, tags, description, and backlinks.
 
 ## Overview
 
@@ -44,6 +50,8 @@ An Obsidian plugin that autonomously scans your vault for untagged image assets 
 - **Backlink Extraction**: Automatically detects and lists other notes in your vault that embed or link to the image.
 - **Privacy First (Local AI)**: Designed to work seamlessly with local LLM/VLM servers like [LM Studio](https://lmstudio.ai/) or [Ollama](https://ollama.com/), ensuring your assets never leave your machine.
 - **Batch Processing**: Scans your designated asset folder and processes all untagged images sequentially to manage server load.
+
+> 💡 **Pro tip**: Use [Dataview](docs/dataview-integration.md) to create image galleries from your tagged assets — query by tags, categories, and more.
 
 ## Prerequisites
 
