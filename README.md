@@ -19,21 +19,6 @@
   <img src="https://img.shields.io/github/license/0xkz1/obsidian-asset-weaver?style=flat-square" alt="MIT license">
 </p>
 
-## What AssetWeaver Does
-
-AssetWeaver transforms your vault's raw image assets into a structured, searchable library by using a local Vision-Language Model to generate rich metadata.
-
-### At Scale: From Mess to Library
-
-Thousands of generic filenames (`Pasted image 1.png`, `Screenshot 2026-05-11 at 23.15.58.png`) become a categorized, searchable collection with meaningful English titles and metadata.
-
-![Before Directory](./sample/before_directory.png)
-![After Directory](./sample/after_directory.png)
-
-### Per Asset: From Image to Structured Data
-
-See the [Visual Comparison](#visual-comparison-before-vs-after) below for how a raw image gets transformed into YAML frontmatter — title, tags, description, and backlinks.
-
 ## Overview
 
 An Obsidian plugin that autonomously scans your vault for untagged image assets and leverages a local Vision-Language Model (VLM) to generate structured markdown sidecar files. Perfect for creative professionals, artists, and researchers looking to weave their visual libraries into their knowledge graphs without relying on cloud APIs.
@@ -42,6 +27,8 @@ An Obsidian plugin that autonomously scans your vault for untagged image assets 
 | Before (Image Only) | After (Weaved Metadata) |
 |:---:|:---:|
 | ![Before](./sample/before_fox_image.png) | ![After](./sample/after_fox_image.png) |
+
+> 📂 See the [Library-Scale Transformation](docs/library-transformation.md) guide for before/after directory screenshots.
 
 ## Features
 
