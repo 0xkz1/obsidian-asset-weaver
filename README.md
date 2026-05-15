@@ -19,6 +19,15 @@
   <img src="https://img.shields.io/github/license/0xkz1/obsidian-asset-weaver?style=flat-square" alt="MIT license">
 </p>
 
+<hr>
+
+<p align="center">
+  <strong>📖 <a href="docs/dataview-integration.md">Dataview Integration Guide</a></strong><br>
+  <span style="font-size: 0.9em;">Learn how to query your tagged images with Dataview — gallery queries, library-scale transformation examples, and more.</span>
+</p>
+
+<hr>
+
 ## Overview
 
 An Obsidian plugin that autonomously scans your vault for untagged image assets and leverages a local Vision-Language Model (VLM) to generate structured markdown sidecar files. Perfect for creative professionals, artists, and researchers looking to weave their visual libraries into their knowledge graphs without relying on cloud APIs.
@@ -35,8 +44,6 @@ An Obsidian plugin that autonomously scans your vault for untagged image assets 
 - **Backlink Extraction**: Automatically detects and lists other notes in your vault that embed or link to the image.
 - **Privacy First (Local AI)**: Designed to work seamlessly with local LLM/VLM servers like [LM Studio](https://lmstudio.ai/) or [Ollama](https://ollama.com/), ensuring your assets never leave your machine.
 - **Batch Processing**: Scans your designated asset folder and processes all untagged images sequentially to manage server load.
-
-> 📖 **Learn more**: See the [Dataview Integration Guide](docs/dataview-integration.md) for gallery queries and library-scale transformation examples.
 
 ## Prerequisites
 

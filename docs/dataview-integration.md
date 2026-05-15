@@ -4,35 +4,28 @@ After AssetWeaver processes your images, you can use [Dataview](https://github.c
 
 ---
 
-## 1. Library-Scale Transformation (Macro View)
+## What AssetWeaver Creates
 
-AssetWeaver automatically renames and indexes generic filenames (e.g., `Pasted image...`) into a categorized, searchable library.
+Before diving into Dataview queries, it helps to understand what AssetWeaver produces. Each image gets a sidecar `.md` file with structured YAML frontmatter — including English titles, categories, tags, and a `cover` field referencing the original image.
 
-### Before: Unorganized Generic Filenames
+### At Scale: From Mess to Library
 
-No context, difficult to search, and cluttered filesystem.
+Thousands of generic filenames (`Pasted image 1.png`, `Screenshot 2026-05-11 at 23.15.58.png`) become a categorized, searchable collection with meaningful titles and metadata.
 
 ![Before Directory](../sample/before_directory.png)
-
-### After: Categorized & Searchable Library
-
-AI-driven English titles and sidecar metadata for every asset.
-
 ![After Directory](../sample/after_directory.png)
 
----
+### Per Asset: From Image to Structured Data
 
-## 2. Asset Enrichment (Micro View)
-
-See the main [README](../README.md#visual-comparison-before-vs-after) for the Before/After comparison of individual image processing — how a raw image gets transformed into structured YAML frontmatter.
+See the main [README](../README.md#visual-comparison-before-vs-after) for a side-by-side comparison of how a raw image gets transformed into YAML frontmatter (title, tags, description, backlinks).
 
 ---
 
-## 3. Dataview Gallery Query
+## Dataview Gallery Query
 
-After AssetWeaver processes your images, you can use Dataview to create smart galleries. Here's how to query images tagged with `#animal`:
+Here's how to query images tagged with `#animal` and display them as a gallery:
 
-### Example Query (Dataview)
+### Query
 
 ```dataview
 TABLE without id
@@ -51,9 +44,7 @@ SORT file.ctime DESC
 3. **Displays** a gallery with cover images (300px width)
 4. **Links** to the full metadata file for each asset
 
-### Sample Result
-
-Here's an example of what your Dataview gallery looks like with `#animal` tagged assets:
+### Result Preview
 
 ![Animal Gallery Example](../sample/gallery_animal.png)
 
