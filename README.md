@@ -38,7 +38,7 @@ An Obsidian plugin that autonomously scans your vault for untagged image assets 
 - **Privacy First (Local AI)**: Designed to work seamlessly with local LLM/VLM servers like [LM Studio](https://lmstudio.ai/) or [Ollama](https://ollama.com/), ensuring your assets never leave your machine.
 - **Batch Processing**: Scans your designated asset folder and processes all untagged images sequentially to manage server load.
 
-> 💡 **Pro tip**: Use [Dataview](docs/dataview-integration.md) to create image galleries from your tagged assets — query by tags, categories, and more.
+> 💡 **Pro tip**: See [how to create Dataview galleries](docs/dataview-integration.md) from your tagged assets — query by tags, categories, and more.
 
 ## Prerequisites
 
