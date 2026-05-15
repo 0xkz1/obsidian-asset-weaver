@@ -80,19 +80,16 @@ During the development of this plugin, several edge cases were identified and re
 
 ## License
 
-## Origins    
-AssetWeaver originated from an experimental Python-based image archival workflow developed for managing large-scale creative image collections inside Obsidian.  
-Original prototype:  
-https://github.com/0xkz1/Obsidian-AI-Asset-Tagger
+## Origins
+
+AssetWeaver originated from an experimental Python-based image archival workflow initially developed to manage large-scale creative image collections inside Obsidian. That prototype informed the design and architecture of this Obsidian plugin.
 
 ---
 
 # AssetWeaver (日本語)
 
 ## 開発の背景
-AssetWeaverは、もともとObsidian内の大規模なクリエイティブ画像コレクションを管理するために開発された、実験的なPythonベースの画像アーカイブ・ワークフローから誕生しました。  
-オリジナル・プロトタイプ：  
-https://github.com/0xkz1/Obsidian-AI-Asset-Tagger
+AssetWeaverは、もともとObsidian内の大規模なクリエイティブ画像コレクションを管理するために開発された、実験的なPythonベースの画像アーカイブ・ワークフローに端を発します。そのプロトタイプでの知見が、本Obsidianプラグインの設計とアーキテクチャに活かされています。
 
 ## 特徴
 - **メタデータの自動生成**: 画像を分析し、説明的なタイトル、カテゴリ、キーワード、および一文の説明を生成します。
