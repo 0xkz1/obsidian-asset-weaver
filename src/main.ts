@@ -79,7 +79,7 @@ export default class AssetWeaverPlugin extends Plugin {
 		const images = filesInTarget.filter(f => imageExtensions.includes(f.extension.toLowerCase()));
 		const mds = filesInTarget.filter(f => f.extension.toLowerCase() === 'md');
 
-		console.debug(`AssetWeaver: Found ${images.length} images and ${mds.length} markdown files in "${normalizedTargetRoot}"`);
+		console.debug(`AssetWeaver: Found ${images.length} images and ${mds.length} Markdown files in "${normalizedTargetRoot}"`);
 		if (images.length > 0) {
 			new Notice(`Found ${images.length} images in target folder.`);
 		} else {
@@ -119,7 +119,7 @@ export default class AssetWeaverPlugin extends Plugin {
 		}
 
 		if (unTaggedImages.length === 0 && images.length > 0) {
-			new Notice('All images in this folder already have markdown files.');
+			new Notice('All images in this folder already have Markdown files.');
 			return;
 		}
 
