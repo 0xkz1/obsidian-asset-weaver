@@ -3,10 +3,10 @@
 </p>
 
 <p align="center">
-  <strong style="font-size: larger;">Asset Weaver for <a href="https://obsidian.md/">Obsidian.md</a></strong>
+  <strong style="font-size: x-large;">Asset Weaver for <a href="https://obsidian.md/">Obsidian.md</a></strong>
 </p>
 
-# AssetWeaver
+## Overview
 
 An Obsidian plugin that autonomously scans your vault for untagged image assets and leverages a local Vision-Language Model (VLM) to generate structured markdown sidecar files. Perfect for creative professionals, artists, and researchers looking to weave their visual libraries into their knowledge graphs without relying on cloud APIs.
 
