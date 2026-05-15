@@ -1,7 +1,7 @@
 {
 	"id": "asset-weaver",
 	"name": "AssetWeaver",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"minAppVersion": "1.0.0",
 	"description": "Automatically generates markdown sidecars for images using a local Vision-Language Model.",
 	"author": "Kazuki Yunome",
