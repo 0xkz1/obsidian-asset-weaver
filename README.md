@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./sample/asset-weaver-logo.png" alt="AssetWeaver Logo" width="200">
+  <img src="./sample/asset-weaver-logo.png" alt="AssetWeaver Logo" width="150">
 </p>
 
 # AssetWeaver
