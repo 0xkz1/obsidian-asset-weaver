@@ -6,6 +6,19 @@
   <strong style="font-size: x-large;">Asset Weaver for <a href="https://obsidian.md/">Obsidian.md</a></strong>
 </p>
 
+<p align="center">
+  <a href="https://github.com/0xkz1/obsidian-asset-weaver/stargazers">
+    <img src="https://img.shields.io/github/stars/0xkz1/obsidian-asset-weaver?style=flat-square&logo=github" alt="GitHub stars">
+  </a>
+  <a href="https://github.com/0xkz1/obsidian-asset-weaver/issues">
+    <img src="https://img.shields.io/github/issues/0xkz1/obsidian-asset-weaver?style=flat-square&logo=github" alt="GitHub issues">
+  </a>
+  <a href="https://github.com/0xkz1/obsidian-asset-weaver/releases">
+    <img src="https://img.shields.io/github/downloads/0xkz1/obsidian-asset-weaver/total?style=flat-square&logo=github" alt="GitHub downloads">
+  </a>
+  <img src="https://img.shields.io/github/license/0xkz1/obsidian-asset-weaver?style=flat-square" alt="MIT license">
+</p>
+
 ## Overview
 
 An Obsidian plugin that autonomously scans your vault for untagged image assets and leverages a local Vision-Language Model (VLM) to generate structured markdown sidecar files. Perfect for creative professionals, artists, and researchers looking to weave their visual libraries into their knowledge graphs without relying on cloud APIs.
