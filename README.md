@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="./sample/asset-weaver-logo.png" alt="AssetWeaver Logo" width="150">
+  <img src="./sample/asset-weaver-logo.png" alt="AssetWeaver Logo" width="100">
+</p>
+
+<p align="center">
+  <strong style="font-size: larger;">Asset Weaver for <a href="https://obsidian.md/">Obsidian.md</a></strong>
 </p>
 
 # AssetWeaver
