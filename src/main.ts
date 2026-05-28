@@ -40,7 +40,19 @@ export default class AssetWeaverPlugin extends Plugin {
 
 	// Helper function to remove special characters from filenames
 	sanitizeFilename(name: string): string {
-		return name.replace(/[\\/*?:"<>|]/g, "").trim();
+		const cleaned = name.replace(/[\\/*?:"<>|]/g, "").trim();
+		if (cleaned.length > 100) {
+			return cleaned.substring(0, 100).trim();
+		}
+		return cleaned || 'Untitled';
+	}
+
+	// Escape a value for safe inclusion in YAML frontmatter
+	escapeYamlValue(value: string): string {
+		if (/[:#{}|>&*!,"'`@%\\\n\][]/.test(value) || value.trim() !== value) {
+			return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+		}
+		return value;
 	}
 
 	// Helper function to format tags into an array
@@ -56,6 +68,18 @@ export default class AssetWeaverPlugin extends Plugin {
 
 	// Main processing logic
 	async processImages() {
+		const apiUrl = this.settings.apiBaseUrl;
+		try {
+			const parsed = new URL(apiUrl);
+			if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+				new Notice('The API base URL must use HTTP or HTTPS.');
+				return;
+			}
+		} catch {
+			new Notice('API base URL is not a valid URL. Check your settings.');
+			return;
+		}
+
 		const targetFolderPath = this.settings.targetFolder;
 		
 		// Normalize target folder path (remove leading/trailing slashes)
@@ -271,8 +295,8 @@ CRITICAL: Do not use unescaped double quotes inside the JSON strings. Use single
 			// Extract metadata from the AI response
 			const title = this.sanitizeFilename(String(analysis.title ?? 'Untitled'));
 			const tags = this.sanitizeTags(analysis.tags ?? []);
-			const category = analysis.category ?? 'Unclassified';
-			const description = analysis.description ?? '';
+			const category = String(analysis.category ?? 'Unclassified').replace(/[\n\r]/g, ' ');
+			const description = String(analysis.description ?? '').replace(/[\n\r]/g, ' ');
 			const timestamp = window.moment().format("YYYY-MM-DD HH:mm");
 
 			// Retrieve backlinks (notes that reference this image)
@@ -310,8 +334,8 @@ CRITICAL: Do not use unescaped double quotes inside the JSON strings. Use single
 			const mdName = `${imgFile.basename} - ${title}.md`;
 
 			const mdContent = `---
-title: ${title}
-category: ${category}
+title: ${this.escapeYamlValue(title)}
+category: ${this.escapeYamlValue(category)}
 tags: ${tagsString}
 cover: "${imgFile.name}"
 linked_notes:${linkedNotesYaml}
