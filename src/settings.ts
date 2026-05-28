@@ -52,13 +52,16 @@ export class AssetWeaverSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('API key')
 			.setDesc('API key for authentication (use any dummy value for local servers).')
-			.addText(text => text
-				.setPlaceholder('Enter the API key')
-				.setValue(this.plugin.settings.apiKey)
-				.onChange(async (value) => {
-					this.plugin.settings.apiKey = value;
-					await this.plugin.saveSettings();
-				}));
+			.addText(text => {
+				text.setPlaceholder('Enter the API key')
+					.setValue(this.plugin.settings.apiKey)
+					.onChange(async (value) => {
+						this.plugin.settings.apiKey = value;
+						await this.plugin.saveSettings();
+					});
+				text.inputEl.type = 'password';
+				text.inputEl.autocomplete = 'off';
+			});
 
 		new Setting(containerEl)
 			.setName('Target folder')
