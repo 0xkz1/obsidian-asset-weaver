@@ -7,6 +7,10 @@
 </p>
 
 <p align="center">
+  <a href="https://community.obsidian.md/plugins/asset-weaver">https://community.obsidian.md/plugins/asset-weaver</a>
+</p>
+
+<p align="center">
   <a href="https://github.com/0xkz1/obsidian-asset-weaver/stargazers">
     <img src="https://img.shields.io/github/stars/0xkz1/obsidian-asset-weaver?style=flat-square&logo=github" alt="GitHub stars">
   </a>
