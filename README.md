@@ -38,35 +38,28 @@ An Obsidian plugin that autonomously scans your vault for untagged image assets 
 
 ```mermaid
 flowchart TD
-    %% Styling and colors
-    classDef trigger fill:#e8f4fd,stroke:#2b82c9,stroke-width:2px,color:#0b2e4b;
-    classDef process fill:#f3f3f3,stroke:#666666,stroke-width:1px,color:#333333;
-    classDef decision fill:#fff9e6,stroke:#d4a017,stroke-width:2px,color:#5c4308;
-    classDef external fill:#fbf0f0,stroke:#c0392b,stroke-width:1px,color:#781e1e;
-    classDef success fill:#eafaf1,stroke:#27ae60,stroke-width:2px,color:#145a32;
-
     %% Nodes
-    Start([Run AssetWeaver]) :::trigger
-    GetFiles["Scan target folder in Vault"] :::process
-    Skip["Skip files with existing sidecars"] :::process
-    FilterImages{"Are there untagged images?"} :::decision
-    LoopStart["Process Next Image"] :::process
+    Start([Run AssetWeaver])
+    GetFiles["Scan target folder in Vault"]
+    Skip["Skip files with existing sidecars"]
+    FilterImages{"Are there untagged images?"}
+    LoopStart["Process Next Image"]
     
-    ReadBinary["Read image file binary"] :::process
-    CheckEmpty{"Is file empty (0-byte)?"} :::decision
-    ErrorNotice["Show corrupted file notice & skip"] :::external
+    ReadBinary["Read image file binary"]
+    CheckEmpty{"Is file empty (0-byte)?"}
+    ErrorNotice["Show corrupted file notice & skip"]
     
-    Resize["HTML5 Canvas: Resize to max 768px & compress to JPEG"] :::process
-    ScanBacklinks["Scan Vault markdown files for link/embed references"] :::process
+    Resize["HTML5 Canvas: Resize to max 768px & compress to JPEG"]
+    ScanBacklinks["Scan Vault markdown files for link/embed references"]
     
-    CallVLM["Call VLM API chat/completions with resized base64 image"] :::external
-    CleanJSON["Sanitize unescaped quotes & parse JSON"] :::process
+    CallVLM["Call VLM API chat/completions with resized base64 image"]
+    CleanJSON["Sanitize unescaped quotes & parse JSON"]
     
-    FormatMD["Format YAML frontmatter & markdown content"] :::process
-    CreateFile["Create sidecar markdown file: Basename - Title.md"] :::success
+    FormatMD["Format YAML frontmatter & markdown content"]
+    CreateFile["Create sidecar markdown file: Basename - Title.md"]
     
-    Delay["Wait 1000ms delay"] :::process
-    Finished([Batch processing complete!]) :::success
+    Delay["Wait 1000ms delay"]
+    Finished([Batch processing complete!])
 
     %% Connections
     Start --> GetFiles
@@ -90,6 +83,19 @@ flowchart TD
     Delay --> LoopStart
     
     ErrorNotice --> LoopStart
+
+    %% Styling and colors
+    classDef trigger fill:#e8f4fd,stroke:#2b82c9,stroke-width:2px,color:#0b2e4b;
+    classDef process fill:#f3f3f3,stroke:#666666,stroke-width:1px,color:#333333;
+    classDef decision fill:#fff9e6,stroke:#d4a017,stroke-width:2px,color:#5c4308;
+    classDef external fill:#fbf0f0,stroke:#c0392b,stroke-width:1px,color:#781e1e;
+    classDef success fill:#eafaf1,stroke:#27ae60,stroke-width:2px,color:#145a32;
+
+    class Start trigger;
+    class GetFiles,Skip,LoopStart,ReadBinary,Resize,ScanBacklinks,CleanJSON,Delay process;
+    class FilterImages,CheckEmpty decision;
+    class ErrorNotice,CallVLM external;
+    class CreateFile,Finished success;
 ```
 
 ## Features
