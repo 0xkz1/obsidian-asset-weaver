@@ -8,11 +8,11 @@ After AssetWeaver processes your images, you can use [Dataview](https://github.c
 
 ```dataview
 TABLE without id
-"![[" & file.cover & "|300]]" as Cover,
+"![[" + cover + "|300]]" as Cover,
 file.link as Name,
 file.tags as Tags
 FROM "11_assets_OB"
-WHERE contains(file.tags, "animal")
+WHERE contains(file.tags, "#animal")
 SORT file.ctime DESC
 ```
 
@@ -33,9 +33,9 @@ SORT file.ctime DESC
 
 ```dataview
 TABLE without id
-"[[" & file.link & "|" & file.cover & "]]" as "Animal Images"
+"[[" + cover + "]]" as "Animal Images"
 FROM "" 
-WHERE contains(file.tags, "animal")
+WHERE contains(file.tags, "#animal")
 SORT file.mtime DESC
 ```
 
@@ -51,8 +51,8 @@ When AssetWeaver processes an image, it creates a `.md` sidecar file like this:
 ---
 title: A red fox in the forest
 category: Nature
-tags: [animal, wildlife, fox]
-cover: Pasted image 001.png
+tags: ['animal', 'wildlife', 'fox']
+cover: "Pasted image 001.png"
 linked_notes: []
 processed_at: 2026-05-01 11:00
 ---
